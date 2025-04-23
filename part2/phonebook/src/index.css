@@ -1,0 +1,15 @@
+.notificationStyle {
+  color: green;
+  background-color: lightgray;
+  border: solid green;
+  padding: 10px;
+  font-size: 30px;
+}
+
+.errorStyle {
+  color: red;
+  background-color: lightgray;
+  border: solid red;
+  padding: 10px;
+  font-size: 30px;
+}
