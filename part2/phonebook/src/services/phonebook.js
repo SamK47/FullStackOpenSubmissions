@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = 'http://localhost:3001/persons'
+const baseUrl = 'https://render-main-backend.onrender.com/api/persons'
 
 const getAll = () => {
     const request = axios.get(baseUrl)
@@ -20,7 +20,7 @@ const remove = (id) => {
 
 const update = (id, newPerson) => {
     const request = axios.put(`${baseUrl}/${id}`, newPerson)
-    
+
     return request.then(response => response.data)
 
 }
