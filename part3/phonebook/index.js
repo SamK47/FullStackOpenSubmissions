@@ -1,9 +1,13 @@
+require('dotenv').config()
+const Person = require('./models/phonebook')
 const express = require('express')
 const app = express()
 app.use(express.json())
 var morgan = require('morgan')
 const cors = require('cors')
 app.use(cors())
+app.use(express.static('dist'));
+
 let persons = [
     {
         "id": "1",
@@ -38,8 +42,15 @@ morgan.token('postBody', (req) => {
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postBody'));
 
+app.get('/', (request, response) => {
+    response.send('<h1>Hello Backend</h1>')
+})
+
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
+
 })
 
 app.get('/info', (request, response) => {
@@ -52,7 +63,7 @@ app.get('/api/persons/:id', (request, response) => {
     const id = request.params.id
     const person = persons.find(person => person.id === id)
     if (!person) {
-       return response.status(404).end()
+        return response.status(404).end()
     }
     response.json(person)
 
@@ -65,23 +76,30 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const newPerson = request.body;
     if (!newPerson.name || newPerson.name.trim() === '') {
-        return response.status(400).json({ error: 'name must be provided and it cannot be empty'});
+        return response.status(400).json({ error: 'name must be provided and it cannot be empty' });
     }
 
     if (!newPerson.number || newPerson.number.trim() === '') {
         return response.status(400).json({ error: 'number must be provided and it cannot be empty' });
     }
 
-    if (persons.find(person => person.name === newPerson.name)) {
-        return response.status(400).json({ error: 'name must be unique' });
-    }
-    newPerson.id = String(Math.floor(Math.random() * 10000));
-    persons = persons.concat(newPerson);
-    response.json(newPerson);
+    Person.findOne({ name: newPerson.name }).then(existingPerson => {
+        if (existingPerson) {
+            return response.status(400).json({ error: 'name must be unique' });
+        }
 
+        const person = new Person({
+            name: newPerson.name,
+            number: newPerson.number
+        });
+
+        person.save().then(savedPerson => {
+            response.json(savedPerson);
+        });
+    }).catch(error => next(error));
 });
 
 const PORT = process.env.PORT || 3001;
