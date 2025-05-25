@@ -15,6 +15,7 @@ const create = (newPerson) => {
 
 const remove = (id) => {
     const request = axios.delete(`${baseUrl}/${id}`)
+     console.log(`THE ID OF THIS PERSON IS ${id}`);
     return request.then(response => response.data)
 }
 
