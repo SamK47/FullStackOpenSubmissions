@@ -1,1 +1,1 @@
-- **Phonebook Backend (Part 3)**: https://render-main-backend.onrender.com/api/persons
+- **Phonebook Backend (Part 3)**: https://render-main-backend.onrender.com/
