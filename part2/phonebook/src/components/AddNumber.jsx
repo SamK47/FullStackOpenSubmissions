@@ -38,11 +38,21 @@ const addNumber = ({ persons, newName, newNumber, setPersons, setNewName, setNew
                 setPersons(persons.concat(response));
                 setNewName('')
                 setNewNumber('')
+                setNewMessage(`Added ${newPerson.name}`)
+                setTimeout(() => {
+                    setNewMessage(null)
+                }, 5000)
             })
-        setNewMessage(`Added ${newPerson.name}`)
-        setTimeout(() => {
-            setNewMessage(null)
-        }, 5000)
+            .catch(error => {
+                console.log(error.response.data.error);
+                setNewMessage(`${error.response.data.error}`)
+                setNewMessageType('error')
+                setTimeout(() => {
+                    setNewMessage(null)
+                    setNewMessageType('')
+                }, 5000)
+            })
+
     }
 
 }
